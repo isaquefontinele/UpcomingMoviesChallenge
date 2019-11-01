@@ -1,5 +1,6 @@
 package com.arctouch.codechallenge.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.arctouch.codechallenge.R
@@ -16,15 +17,31 @@ class HomeActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_activity)
 
-        api.upcomingMovies(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE, 1, TmdbApi.DEFAULT_REGION)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                val moviesWithGenres = it.results.map { movie ->
-                    movie.copy(genres = Cache.genres.filter { movie.genreIds?.contains(it.id) == true })
-                }
-                recyclerView.adapter = HomeAdapter(moviesWithGenres)
-                progressBar.visibility = View.GONE
-            }
+        getGenres()
     }
+
+    private fun getUpcomingMovies() {
+        api.upcomingMovies(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE, 1, TmdbApi.DEFAULT_REGION)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    val moviesWithGenres = it.results.map { movie ->
+                        movie.copy(genres = Cache.genres.filter { movie.genreIds?.contains(it.id) == true })
+                    }
+                    recyclerView.adapter = HomeAdapter(moviesWithGenres)
+                    progressBar.visibility = View.GONE
+                }
+    }
+
+    private fun getGenres() {
+        api.genres(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    Cache.cacheGenres(it.genres)
+                    getUpcomingMovies()
+                }
+    }
+
+
 }
