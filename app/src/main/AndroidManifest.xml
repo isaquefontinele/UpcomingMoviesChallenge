@@ -21,6 +21,16 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".home.MovieDetailActivity"
+            android:label=""
+            android:parentActivityName=".home.HomeActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.arctouch.codechallenge.home.HomeActivity" />
+        </activity>
+
     </application>
 
 </manifest>
