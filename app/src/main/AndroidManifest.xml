@@ -15,7 +15,8 @@
 
         <activity
             android:name=".ui.HomeActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -26,7 +27,8 @@
             android:name=".ui.MovieDetailActivity"
             android:label=""
             android:parentActivityName=".ui.HomeActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenSize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.arctouch.codechallenge.ui.HomeActivity" />

@@ -5,14 +5,12 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
 import android.view.View
 import com.arctouch.codechallenge.R
-import com.arctouch.codechallenge.api.TmdbApi
 import com.arctouch.codechallenge.api.WebService
 import com.arctouch.codechallenge.data.Cache
 import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.model.MovieListType
+import com.arctouch.codechallenge.repositories.MovieRepository
 import com.getbase.floatingactionbutton.FloatingActionsMenu
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.home_activity.*
 
 class HomePresenter (var homeView: HomeActivity) {
@@ -22,86 +20,69 @@ class HomePresenter (var homeView: HomeActivity) {
     private var currentQuery: String? = ""
     private var currentListType: MovieListType = MovieListType.POPULAR
     private var moviesList: ArrayList<Movie> = arrayListOf()
+    private var moviesRepository = MovieRepository(homeView)
 
     fun getGenres() {
         homeView.showProgressBar()
-        webService.api.genres(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    homeView.hideProgressBar()
-                    Cache.cacheGenres(it.genres)
-                }
+        moviesRepository.getGenres({
+            homeView.hideProgressBar()
+            Cache.cacheGenres(it)
+        }, {
+            homeView.showError()
+        })
+
     }
 
     private fun getUpcomingMovies(page: Int) {
         homeView.showProgressBar()
-        webService.api.upcomingMovies(TmdbApi.API_KEY, page, TmdbApi.DEFAULT_LANGUAGE)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-
-                    val moviesWithGenres = it.results.map { movie ->
-                        movie.copy(genres = Cache.genres.filter { movie.genreIds?.contains(it.id) == true })
-                    }
-                    moviesList.addAll(moviesWithGenres)
-                    homeView.showList(moviesList)
-                    homeView.hideProgressBar()
-                }
+        moviesRepository.getUpcomingMovies(page, {
+            moviesList.addAll(it)
+            homeView.showList(moviesList)
+            homeView.hideProgressBar()
+        }, {
+            homeView.showError()
+        })
     }
 
     fun getPopularMovies(page: Int) {
         homeView.showProgressBar()
-        webService.api.popularMovies(TmdbApi.API_KEY, page, TmdbApi.DEFAULT_LANGUAGE)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+        moviesRepository.getPopularMovies(page, {
+            moviesList.addAll(it)
+            homeView.showList(moviesList)
+            homeView.hideProgressBar()
+        }, {
+            homeView.showError()
 
-                    val moviesWithGenres = it.results.map { movie ->
-                        movie.copy(genres = Cache.genres.filter { movie.genreIds?.contains(it.id) == true })
-                    }
-                    moviesList.addAll(moviesWithGenres)
-                    homeView.showList(moviesList)
-                    homeView.hideProgressBar()
-                }
+        })
     }
 
     private fun getPlayingNowMovies(page: Int) {
         homeView.showProgressBar()
-        webService.api.getNowPlayingMovies(TmdbApi.API_KEY, page, TmdbApi.DEFAULT_LANGUAGE)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-
-                    val moviesWithGenres = it.results.map { movie ->
-                        movie.copy(genres = Cache.genres.filter { movie.genreIds?.contains(it.id) == true })
-                    }
-                    moviesList.addAll(moviesWithGenres)
-                    homeView.showList(moviesList)
-                    homeView.hideProgressBar()
-                }
+        moviesRepository.getPlayingNowMovies(page, {
+            moviesList.addAll(it)
+            homeView.showList(moviesList)
+            homeView.hideProgressBar()
+        }, {
+            homeView.showError()
+        })
     }
 
     private fun getMoviesBySearch(query: String, page: Int) {
         homeView.showProgressBar()
-        webService.api.getMoviesListBySearch(TmdbApi.API_KEY, query, page, TmdbApi.DEFAULT_LANGUAGE)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    val moviesWithGenres = it.results.map { movie ->
-                        movie.copy(genres = Cache.genres.filter { movie.genreIds?.contains(it.id) == true })
-                    }
-                    moviesList.addAll(moviesWithGenres)
-                    homeView.showList(moviesList)
-                    homeView.hideProgressBar()
-                }
+        moviesRepository.getMoviesBySearch(query, page, {
+            moviesList.addAll(it)
+            homeView.showList(moviesList)
+            homeView.hideProgressBar()
+        }, {
+            homeView.showError()
+        })
     }
 
     fun setupRecyclerView(recyclerView: RecyclerView) {
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (homeView.progressBar.visibility != View.VISIBLE) {
+                if (!homeView.progressBarIsVisible()) {
                     if (!recyclerView!!.canScrollVertically(1)) {
                         currentPage++
                         if (currentQuery!!.isNotEmpty()) {
@@ -164,14 +145,10 @@ class HomePresenter (var homeView: HomeActivity) {
         currentPage = 1
     }
 
-    fun setupFab() {
-        homeView.fab_action_popular.setOnClickListener { fabOnClick(MovieListType.POPULAR, homeView.fab_menu) }
-        homeView.fab_action_playing_now.setOnClickListener { fabOnClick(MovieListType.PLAYING_NOW, homeView.fab_menu) }
-        homeView.fab_action_upcoming.setOnClickListener { fabOnClick(MovieListType.UPCOMING, homeView.fab_menu) }
-    }
 
-    private fun fabOnClick(newListType: MovieListType, menu: FloatingActionsMenu) {
+    fun fabOnClick(newListType: MovieListType, menu: FloatingActionsMenu) {
         if (currentListType != newListType) {
+            homeView.updateTitle(newListType)
             currentListType = newListType
             resetListParameters()
             updateMoviesList(newListType, currentPage)
