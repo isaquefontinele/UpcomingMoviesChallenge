@@ -1,27 +1,18 @@
-package com.arctouch.codechallenge.home
+package com.arctouch.codechallenge.ui
 
-import android.os.Bundle
 import android.view.View
-import com.arctouch.codechallenge.R
+import com.arctouch.codechallenge.api.WebService
 import com.arctouch.codechallenge.api.TmdbApi
-import com.arctouch.codechallenge.base.BaseActivity
 import com.arctouch.codechallenge.data.Cache
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.home_activity.*
 
-class HomeActivity : BaseActivity() {
+class HomePresenter (var homeView: HomeInterface) {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.home_activity)
+    val webService = WebService()
 
-        getGenres()
-    }
-
-
-    private fun getGenres() {
-        api.genres(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE)
+    fun getGenres() {
+        webService.api.genres(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -31,15 +22,14 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun getUpcomingMovies() {
-        api.upcomingMovies(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE, 1, TmdbApi.DEFAULT_REGION)
+        webService.api.upcomingMovies(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE, 1, TmdbApi.DEFAULT_REGION)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     val moviesWithGenres = it.results.map { movie ->
                         movie.copy(genres = Cache.genres.filter { movie.genreIds?.contains(it.id) == true })
                     }
-                    recyclerView.adapter = HomeAdapter(this, moviesWithGenres)
-                    progressBar.visibility = View.GONE
+                    homeView.showList(moviesWithGenres)
                 }
     }
 }

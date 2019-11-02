@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".home.HomeActivity"
+            android:name=".ui.HomeActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,13 +22,13 @@
         </activity>
 
         <activity
-            android:name=".home.MovieDetailActivity"
+            android:name=".ui.MovieDetailActivity"
             android:label=""
-            android:parentActivityName=".home.HomeActivity"
+            android:parentActivityName=".ui.HomeActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.arctouch.codechallenge.home.HomeActivity" />
+                android:value="com.arctouch.codechallenge.ui.HomeActivity" />
         </activity>
 
     </application>

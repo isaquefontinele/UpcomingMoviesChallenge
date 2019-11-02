@@ -25,5 +25,7 @@ data class Movie(
     @Json(name = "vote_average") val voteAverage: Double = 0.toDouble(),
     @Json(name = "popularity") val popularity: Double = 0.toDouble(),
     @Json(name = "original_title") val originalTitle: String? = null,
-    @Json(name = "original_language") val originalLanguage: String? = null
+    @Json(name = "original_language") val originalLanguage: String? = null,
+    @Json(name = "homepage") val homepage: String? = null,
+    @Json(name = "imdb_id") val imdbId: String? = null
 )
