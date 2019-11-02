@@ -22,6 +22,7 @@ class HomeActivity : AppCompatActivity(), HomeInterface {
         presenter.getGenres()
         presenter.getUpcomingMovies(1)
         presenter.setupRecyclerView(recyclerView)
+        presenter.setupSearchBar()
 
     }
 
