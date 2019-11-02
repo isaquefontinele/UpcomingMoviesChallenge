@@ -1,4 +1,28 @@
 <resources>
     <string name="app_name">Code Challenge</string>
-    <string name="movie_and_genres">%s - %s</string>
+
+    <!-->Movie details<-->
+    <string name="release_date">Data de Lançamento:</string>
+    <string name="rating">Avaliação:</string>
+    <string name="imdb" translatable="false">IMDB:</string>
+    <string name="website" translatable="false">Website:</string>
+    <string name="generos">Gêneros:</string>
+    <string name="name">Título:</string>
+    <string name="overview_not_found">Sinopse não encontrada.</string>
+    <string name="title_movie_details">Detalhes do Filme</string>
+    <string name="title_overview">Sinopse</string>
+    <string name="title_links" translatable="false">Links</string>
+
+    <!-->Error messages<-->
+    <string name="error_loading_movies">Erro carregando filmes.\nCheque sua conexão.</string>
+    <string name="error_loading_movie">Erro carregando o filme.\nCheque sua conexão.</string>
+
+    <!-->Search bar<-->
+    <string name="search_hint">Procure por um filme</string>
+
+    <!-->Movie list<-->
+    <string name="movie_title_popular">Filmes Populares</string>
+    <string name="movie_title_upcoming">Próximos Filmes</string>
+    <string name="movie_title_now_playing">Filmes em cartaz</string>
+
 </resources>

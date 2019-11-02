@@ -14,7 +14,9 @@ interface TmdbApi {
         const val URL = "https://api.themoviedb.org/3/"
         const val API_KEY = "1f54bd990f1cdfb230adb312546d765d"
         const val DEFAULT_LANGUAGE = "pt-BR"
-        const val DEFAULT_REGION = "BR"
+        const val IMAGES_BASE_URL = "http://image.tmdb.org/t/p/"
+        const val POSTER_SIZE_MINI = "w185"
+        const val POSTER_SIZE_LARGE = "w780"
     }
 
     @GET("genre/movie/list")
@@ -26,15 +28,36 @@ interface TmdbApi {
     @GET("movie/upcoming")
     fun upcomingMovies(
         @Query("api_key") apiKey: String,
-        @Query("language") language: String,
-        @Query("page") page: Long,
-        @Query("region") region: String
+        @Query("page") page: Int,
+        @Query("language") language: String
+    ): Observable<UpcomingMoviesResponse>
+
+    @GET("movie/popular")
+    fun popularMovies(
+        @Query("api_key") apiKey: String,
+        @Query("page") page: Int,
+        @Query("language") language: String
+    ): Observable<UpcomingMoviesResponse>
+
+    @GET("movie/now_playing")
+    fun getNowPlayingMovies(
+        @Query("api_key") apiKey: String,
+        @Query("page") page: Int,
+        @Query("language") language: String
     ): Observable<UpcomingMoviesResponse>
 
     @GET("movie/{id}")
     fun movie(
-        @Path("id") id: Long,
+        @Path("id") id: Int,
         @Query("api_key") apiKey: String,
         @Query("language") language: String
     ): Observable<Movie>
+
+    @GET("search/movie")
+    fun getMoviesListBySearch(
+        @Query("api_key") apiKey: String,
+        @Query("query") query: String,
+        @Query("page") page: Int,
+        @Query("language") language: String
+    ): Observable<UpcomingMoviesResponse>
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Code Challenge</string>
+
+    <!-->Movie details<-->
+    <string name="release_date">Release date:</string>
+    <string name="rating">Rating:</string>
+    <string name="imdb" translatable="false">IMDB:</string>
+    <string name="website" translatable="false">Website:</string>
+    <string name="generos">Genres:</string>
+    <string name="name">Title:</string>
+    <string name="overview_not_found">Sinopse not found.</string>
+    <string name="title_movie_details">Movie details</string>
+    <string name="title_overview">Sinopse</string>
+    <string name="title_links" translatable="false">Links</string>
+
+    <!-->Error messages<-->
+    <string name="error_loading_movies">Error loading movies.\nCheck your connection.</string>
+    <string name="error_loading_movie">Error loading movie.\nCheck your connection.</string>
+
+    <!-->Search bar<-->
+    <string name="search_hint">Search for a movie:</string>
+
+    <!-->Movie list<-->
+    <string name="movie_title_popular">Popular movies</string>
+    <string name="movie_title_upcoming">Upcoming movies</string>
+    <string name="movie_title_now_playing">Playing now movies</string>
+</resources>
