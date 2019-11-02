@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.arctouch.codechallenge.R
+import com.arctouch.codechallenge.api.TmdbApi
 import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.util.MOVIE_ID
+import com.arctouch.codechallenge.util.Utils
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_movie_detail.*
 
 class MovieDetailActivity : AppCompatActivity(), MovieDetailsInterface {
@@ -45,6 +48,7 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailsInterface {
                 movie_sinopse.setText(R.string.overview_not_found)
             }
 
+            setupImages(movie)
             setUpLinks(movie)
         } else {
             movie_details_not_found.visibility = View.VISIBLE
@@ -52,10 +56,30 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailsInterface {
         }
     }
 
+    private fun setupImages(movie: Movie) {
+        toolbar_layout.title = movie.title
+
+        if (movie.backdropPath != null) {
+            Picasso.with(this).load(Utils.getPosterLink(movie.backdropPath,
+                    TmdbApi.POSTER_SIZE_LARGE)).placeholder(R.drawable.placeholder).into(movie_poster_large)
+        }
+
+        if (movie.posterPath != null) {
+            Picasso.with(this).load(Utils.getPosterLink(movie.posterPath,
+                    TmdbApi.POSTER_SIZE_LARGE)).placeholder(R.drawable.placeholder).into(movie_poster_fullscreen)
+
+            Picasso.with(this).load(Utils.getPosterLink(movie.posterPath,
+                    TmdbApi.POSTER_SIZE_LARGE)).placeholder(R.drawable.placeholder).into(movie_poster_mini)
+        }
+
+        movie_poster_mini.setOnClickListener { movie_poster_fullscreen.visibility = View.VISIBLE }
+        movie_poster_fullscreen.setOnClickListener { movie_poster_fullscreen.visibility = View.GONE }
+    }
+
     private fun setUpLinks(movie: Movie) {
 
         if (movie.imdbId != null && movie.imdbId.isNotEmpty()) {
-            imdb_link.text = "http://www.imdb.com/title/${movie.imdbId}"
+            imdb_link.text = Utils.getIMDbLink(movie.imdbId)
         } else {
             imdb_line.visibility = View.GONE
         }

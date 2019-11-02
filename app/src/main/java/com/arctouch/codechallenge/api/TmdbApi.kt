@@ -15,6 +15,9 @@ interface TmdbApi {
         const val API_KEY = "1f54bd990f1cdfb230adb312546d765d"
         const val DEFAULT_LANGUAGE = "pt-BR"
         const val DEFAULT_REGION = "BR"
+        const val IMAGES_BASE_URL = "http://image.tmdb.org/t/p/"
+        const val POSTER_SIZE_MINI = "w185"
+        const val POSTER_SIZE_LARGE = "w780"
     }
 
     @GET("genre/movie/list")

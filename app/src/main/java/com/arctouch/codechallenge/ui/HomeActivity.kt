@@ -20,7 +20,7 @@ class HomeActivity : AppCompatActivity(), HomeInterface {
     }
 
     override fun showList(moviesWithGenres: List<Movie>) {
-        recyclerView.adapter = HomeAdapter(this, moviesWithGenres)
+        recyclerView.adapter = HomeAdapter(moviesWithGenres)
         progressBar.visibility = View.GONE
     }
 }
