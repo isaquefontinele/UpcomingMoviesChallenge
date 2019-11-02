@@ -2,6 +2,7 @@ package com.arctouch.codechallenge.ui
 
 import com.arctouch.codechallenge.api.TmdbApi
 import com.arctouch.codechallenge.api.WebService
+import com.arctouch.codechallenge.data.Cache
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -14,7 +15,9 @@ class MovieDetailPresenter (var movieDetailsView: MovieDetailsInterface) {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    movieDetailsView.showMovieDetails(it)
+                    val movie = it
+                    movie.copy(genres = Cache.genres.filter { movie.genreIds?.contains(it.id) == true })
+                    movieDetailsView.showMovieDetails(movie)
                 }
     }
 }

@@ -10,17 +10,35 @@ import kotlinx.android.synthetic.main.home_activity.*
 class HomeActivity : AppCompatActivity(), HomeInterface {
 
     private lateinit var presenter: HomePresenter
+    private lateinit var homeAdapter: HomeAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_activity)
 
         presenter = HomePresenter(this)
+
+        setupViews()
         presenter.getGenres()
+        presenter.getUpcomingMovies(1)
+        presenter.setupRecyclerView(recyclerView)
+
+    }
+
+    private fun setupViews() {
+        homeAdapter = HomeAdapter(ArrayList())
+        recyclerView.adapter = homeAdapter
     }
 
     override fun showList(moviesWithGenres: List<Movie>) {
-        recyclerView.adapter = HomeAdapter(moviesWithGenres)
+        homeAdapter.updateList(moviesWithGenres)
+    }
+
+    fun showProgressBar() {
+        progressBar.visibility = View.VISIBLE
+    }
+
+    fun hideProgressBar() {
         progressBar.visibility = View.GONE
     }
 }

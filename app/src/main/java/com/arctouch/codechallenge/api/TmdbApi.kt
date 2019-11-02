@@ -30,8 +30,7 @@ interface TmdbApi {
     fun upcomingMovies(
         @Query("api_key") apiKey: String,
         @Query("language") language: String,
-        @Query("page") page: Long,
-        @Query("region") region: String
+        @Query("page") page: Int
     ): Observable<UpcomingMoviesResponse>
 
     @GET("movie/{id}")

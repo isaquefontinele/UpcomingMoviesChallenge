@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.api.TmdbApi
+import com.arctouch.codechallenge.data.Cache
 import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.util.MOVIE_ID
 import com.arctouch.codechallenge.util.Utils
@@ -39,7 +40,8 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailsInterface {
             movieName.text = movie.originalTitle
             movieID.text = movie.id.toString()
             release_date.text = movie.releaseDate
-            genres.text = movie.genres.toString()
+            val genresList = movie.genres!!.map { genre -> genre.name }
+            genres.text = genresList.toString().replace("[", "").replace("]", "")
             rating.text = movie.voteAverage.toString()
 
             if (movie.overview != null && movie.overview.isNotEmpty()) {
