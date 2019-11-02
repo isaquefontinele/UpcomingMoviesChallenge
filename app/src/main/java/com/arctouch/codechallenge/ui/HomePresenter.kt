@@ -9,6 +9,8 @@ import com.arctouch.codechallenge.api.TmdbApi
 import com.arctouch.codechallenge.api.WebService
 import com.arctouch.codechallenge.data.Cache
 import com.arctouch.codechallenge.model.Movie
+import com.arctouch.codechallenge.model.MovieListType
+import com.getbase.floatingactionbutton.FloatingActionsMenu
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.home_activity.*
@@ -18,7 +20,7 @@ class HomePresenter (var homeView: HomeActivity) {
     val webService = WebService()
     private var currentPage: Int = 1
     private var currentQuery: String? = ""
-    private var currentList: String = "upcoming"
+    private var currentListType: MovieListType = MovieListType.POPULAR
     private var moviesList: ArrayList<Movie> = arrayListOf()
 
     fun getGenres() {
@@ -32,9 +34,9 @@ class HomePresenter (var homeView: HomeActivity) {
                 }
     }
 
-    fun getUpcomingMovies(page: Int) {
+    private fun getUpcomingMovies(page: Int) {
         homeView.showProgressBar()
-        webService.api.upcomingMovies(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE, page)
+        webService.api.upcomingMovies(TmdbApi.API_KEY, page, TmdbApi.DEFAULT_LANGUAGE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -48,7 +50,39 @@ class HomePresenter (var homeView: HomeActivity) {
                 }
     }
 
-    fun getMoviesBySearch(query: String, page: Int) {
+    fun getPopularMovies(page: Int) {
+        homeView.showProgressBar()
+        webService.api.popularMovies(TmdbApi.API_KEY, page, TmdbApi.DEFAULT_LANGUAGE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+
+                    val moviesWithGenres = it.results.map { movie ->
+                        movie.copy(genres = Cache.genres.filter { movie.genreIds?.contains(it.id) == true })
+                    }
+                    moviesList.addAll(moviesWithGenres)
+                    homeView.showList(moviesList)
+                    homeView.hideProgressBar()
+                }
+    }
+
+    private fun getPlayingNowMovies(page: Int) {
+        homeView.showProgressBar()
+        webService.api.getNowPlayingMovies(TmdbApi.API_KEY, page, TmdbApi.DEFAULT_LANGUAGE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+
+                    val moviesWithGenres = it.results.map { movie ->
+                        movie.copy(genres = Cache.genres.filter { movie.genreIds?.contains(it.id) == true })
+                    }
+                    moviesList.addAll(moviesWithGenres)
+                    homeView.showList(moviesList)
+                    homeView.hideProgressBar()
+                }
+    }
+
+    private fun getMoviesBySearch(query: String, page: Int) {
         homeView.showProgressBar()
         webService.api.getMoviesListBySearch(TmdbApi.API_KEY, query, page, TmdbApi.DEFAULT_LANGUAGE)
                 .subscribeOn(Schedulers.io())
@@ -73,7 +107,7 @@ class HomePresenter (var homeView: HomeActivity) {
                         if (currentQuery!!.isNotEmpty()) {
                             updateMoviesListWithSearch(currentQuery!!, currentPage)
                         } else {
-                            updateMoviesList(currentList, currentPage)
+                            updateMoviesList(currentListType, currentPage)
                         }
                     }
                 }
@@ -81,8 +115,18 @@ class HomePresenter (var homeView: HomeActivity) {
         })
     }
 
-    private fun updateMoviesList(currentList: String, currentPage: Int) {
-        getUpcomingMovies(currentPage)
+    private fun updateMoviesList(currentList: MovieListType, currentPage: Int) {
+        when (currentList) {
+            MovieListType.POPULAR -> {
+                getPopularMovies(currentPage)
+            }
+            MovieListType.UPCOMING -> {
+                getUpcomingMovies(currentPage)
+            }
+            MovieListType.PLAYING_NOW -> {
+                getPlayingNowMovies(currentPage)
+            }
+        }
     }
 
     private fun updateMoviesListWithSearch(currentQuery: String, currentPage: Int) {
@@ -100,11 +144,11 @@ class HomePresenter (var homeView: HomeActivity) {
             override fun onQueryTextChange(newText: String): Boolean {
                 resetListParameters()
                 currentQuery = newText
-                if (!newText.isEmpty()) {
+                if (newText.isNotEmpty()) {
                     updateMoviesListWithSearch(newText, currentPage)
 //                    moviesListTitle.setVisibility(View.INVISIBLE)
                 } else {
-                    updateMoviesList("", currentPage)
+                    updateMoviesList(currentListType, currentPage)
 //                    moviesListTitle.setVisibility(View.VISIBLE)
                 }
                 return false
@@ -118,5 +162,20 @@ class HomePresenter (var homeView: HomeActivity) {
     private fun resetListParameters() {
         moviesList.clear()
         currentPage = 1
+    }
+
+    fun setupFab() {
+        homeView.fab_action_popular.setOnClickListener { fabOnClick(MovieListType.POPULAR, homeView.fab_menu) }
+        homeView.fab_action_playing_now.setOnClickListener { fabOnClick(MovieListType.PLAYING_NOW, homeView.fab_menu) }
+        homeView.fab_action_upcoming.setOnClickListener { fabOnClick(MovieListType.UPCOMING, homeView.fab_menu) }
+    }
+
+    private fun fabOnClick(newListType: MovieListType, menu: FloatingActionsMenu) {
+        if (currentListType != newListType) {
+            currentListType = newListType
+            resetListParameters()
+            updateMoviesList(newListType, currentPage)
+        }
+        menu.collapse()
     }
 }

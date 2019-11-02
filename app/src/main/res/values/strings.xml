@@ -20,4 +20,9 @@
 
     <!-->Search bar<-->
     <string name="search_hint">Procure por um filme</string>
+
+    <!-->Movie list<-->
+    <string name="movie_title_popular">Filmes Populares</string>
+    <string name="movie_title_upcoming">Próximos Filmes</string>
+    <string name="movie_title_now_playing">Filmes em cartaz</string>
 </resources>

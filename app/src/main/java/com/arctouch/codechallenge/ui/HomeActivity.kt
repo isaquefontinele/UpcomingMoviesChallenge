@@ -20,13 +20,14 @@ class HomeActivity : AppCompatActivity(), HomeInterface {
 
         setupViews()
         presenter.getGenres()
-        presenter.getUpcomingMovies(1)
+        presenter.getPopularMovies(1)
         presenter.setupRecyclerView(recyclerView)
         presenter.setupSearchBar()
-
+        presenter.setupFab()
     }
 
     private fun setupViews() {
+        movies_list_type.text = "Popular Movies"
         homeAdapter = HomeAdapter(ArrayList())
         recyclerView.adapter = homeAdapter
     }
@@ -35,11 +36,11 @@ class HomeActivity : AppCompatActivity(), HomeInterface {
         homeAdapter.updateList(moviesWithGenres)
     }
 
-    fun showProgressBar() {
+    override fun showProgressBar() {
         progressBar.visibility = View.VISIBLE
     }
 
-    fun hideProgressBar() {
+    override fun hideProgressBar() {
         progressBar.visibility = View.GONE
     }
 }
