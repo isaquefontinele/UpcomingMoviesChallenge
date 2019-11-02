@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.api.TmdbApi
-import com.arctouch.codechallenge.data.Cache
 import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.util.MOVIE_ID
 import com.arctouch.codechallenge.util.Utils
@@ -36,26 +35,24 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailsInterface {
 
 
     override fun showMovieDetails(movie: Movie) {
-        if (movie != null) {
-            movieName.text = movie.originalTitle
-            movieID.text = movie.id.toString()
-            release_date.text = movie.releaseDate
-            val genresList = movie.genres!!.map { genre -> genre.name }
-            genres.text = genresList.toString().replace("[", "").replace("]", "")
-            rating.text = movie.voteAverage.toString()
+        movie_detail_container.visibility = View.VISIBLE
+        error_loading.visibility = View.GONE
 
-            if (movie.overview != null && movie.overview.isNotEmpty()) {
-                movie_sinopse.text = movie.overview
-            } else {
-                movie_sinopse.setText(R.string.overview_not_found)
-            }
+        movieName.text = movie.originalTitle
+        movieID.text = movie.id.toString()
+        release_date.text = movie.releaseDate
+        val genresList = movie.genres!!.map { genre -> genre.name }
+        genres.text = genresList.toString().replace("[", "").replace("]", "")
+        rating.text = movie.voteAverage.toString()
 
-            setupImages(movie)
-            setUpLinks(movie)
+        if (movie.overview != null && movie.overview.isNotEmpty()) {
+            movie_sinopse.text = movie.overview
         } else {
-            movie_details_not_found.visibility = View.VISIBLE
-            details_body.visibility = View.GONE
+            movie_sinopse.setText(R.string.overview_not_found)
         }
+
+        setupImages(movie)
+        setUpLinks(movie)
     }
 
     private fun setupImages(movie: Movie) {
@@ -95,5 +92,19 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailsInterface {
         if (imdb_line.visibility == View.GONE && homepage_line.visibility == View.GONE) {
             title_links.visibility = View.GONE
         }
+    }
+
+    override fun showProgressBar() {
+        progressBar.visibility = View.VISIBLE
+    }
+
+    override fun hideProgressBar() {
+        progressBar.visibility = View.GONE
+    }
+
+    override fun showError() {
+        movie_detail_container.visibility = View.GONE
+        error_loading.visibility = View.VISIBLE
+        hideProgressBar()
     }
 }

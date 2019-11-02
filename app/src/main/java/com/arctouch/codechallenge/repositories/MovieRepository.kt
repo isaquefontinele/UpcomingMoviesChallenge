@@ -116,6 +116,23 @@ class MovieRepository (var context: Context) {
         } else {
             onFailure()
         }
+    }
 
+    fun getMovie(movieId: Int, onSuccess: (Movie) -> Unit, onFailure: () -> Unit) {
+        if (Utils.isConnected(context)) {
+            try {
+                webService.api.movie(movieId, TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe {
+                            onSuccess(it)
+                        }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                onFailure()
+            }
+        } else {
+            onFailure()
+        }
     }
 }
