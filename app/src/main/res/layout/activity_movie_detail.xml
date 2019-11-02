@@ -65,14 +65,30 @@
                 android:visibility="visible">
 
 
-                <ImageView
-                    android:id="@+id/movie_poster_mini"
-                    android:layout_width="100dp"
+                <FrameLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="20dp"
-                    android:adjustViewBounds="true"
-                    app:srcCompat="@drawable/placeholder" />
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp">
+
+                    <ImageView
+                        android:id="@+id/movie_poster_mini"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+
+                        android:adjustViewBounds="true"
+                        app:srcCompat="@drawable/placeholder" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="false"
+                        android:layout_gravity="bottom|end"
+                        android:src="@drawable/expand"
+                        android:tint="@android:color/white" />
+                </FrameLayout>
+
 
                 <LinearLayout
                     android:id="@+id/name_line"
@@ -185,62 +201,6 @@
                         tools:text="7.0" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/imdb_line"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/textView8"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:text="@string/imdb"
-                        android:textColor="@android:color/white"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/imdb_link"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:autoLink="web"
-                        android:paddingEnd="16dp"
-                        android:paddingStart="16dp"
-                        android:textColor="@android:color/white"
-                        tools:text="TextView" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/homepage_line"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/textView9"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:text="@string/website"
-                        android:textColor="@android:color/white"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/homepage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:autoLink="web"
-                        android:paddingEnd="16dp"
-                        android:paddingStart="16dp"
-                        android:textColor="@android:color/white"
-                        tools:text="TextView" />
-                </LinearLayout>
-
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp" />
-
                 <TextView
                     android:id="@+id/title_details"
                     style="?android:attr/textAppearanceLarge"
@@ -298,6 +258,62 @@
                     android:textColor="@android:color/holo_blue_dark"
                     android:textStyle="bold"
                     android:visibility="visible" />
+
+                <LinearLayout
+                    android:id="@+id/imdb_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="@string/imdb"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/imdb_link"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:autoLink="web"
+                        android:paddingEnd="16dp"
+                        android:paddingStart="16dp"
+                        android:textColor="@android:color/white"
+                        tools:text="TextView" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/homepage_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="@string/website"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/homepage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:autoLink="web"
+                        android:paddingEnd="16dp"
+                        android:paddingStart="16dp"
+                        android:textColor="@android:color/white"
+                        tools:text="TextView" />
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp" />
 
             </LinearLayout>
 
